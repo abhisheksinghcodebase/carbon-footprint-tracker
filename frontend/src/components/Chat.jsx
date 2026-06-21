@@ -103,7 +103,12 @@ export default function Chat({ API_URL }) {
       </div>
 
       {/* Messages list */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-4">
+      <div 
+        className="flex-1 overflow-y-auto p-5 space-y-4"
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+      >
         {messages.map((m, index) => {
           const isAI = m.role === 'assistant';
           return (
@@ -168,6 +173,8 @@ export default function Chat({ API_URL }) {
       <div className="border-t border-zinc-200 dark:border-zinc-800 p-4 flex gap-2">
         <input
           type="text"
+          id="chat-message-input"
+          aria-label="Ask EcoPulse AI Assistant"
           placeholder="Ask EcoPulse AI..."
           className="flex-1 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-xs shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100 transition-all"
           value={input}
@@ -178,6 +185,7 @@ export default function Chat({ API_URL }) {
         <button
           onClick={() => handleSendMessage()}
           disabled={isLoading || !input.trim()}
+          aria-label="Send message"
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg p-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
           <Send size={14} />

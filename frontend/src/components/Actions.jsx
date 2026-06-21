@@ -63,11 +63,16 @@ export default function Actions({ commitments, onUpdateStatus, baselineTotal }) 
 
       {/* Grid Filtering Tabs */}
       <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
-        <div className="flex gap-2 p-1 bg-zinc-100 dark:bg-[#0c0c0f] rounded-lg">
+        <div 
+          role="group" 
+          aria-label="Filter goals by category" 
+          className="flex gap-2 p-1 bg-zinc-100 dark:bg-[#0c0c0f] rounded-lg"
+        >
           {['all', 'transport', 'energy', 'food', 'consumption'].map((c) => (
             <button
               key={c}
               onClick={() => setFilter(c)}
+              aria-pressed={filter === c}
               className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition-all ${
                 filter === c 
                   ? 'bg-white dark:bg-zinc-800 text-blue-500 dark:text-blue-400 shadow-sm' 

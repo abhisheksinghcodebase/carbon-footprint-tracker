@@ -61,4 +61,29 @@ describe('JSON Database Controller', () => {
     const commitments = db.getCommitments();
     assert.ok(commitments.every(c => c.status === 'available'), 'All commitments should reset to available');
   });
+
+  test('addActivity handles missing description and defaults correctly', () => {
+    db.resetAll();
+    const testActivity = {
+      date: '2026-06-21',
+      category: 'food',
+      type: 'vegan',
+      value: 3
+      // description is missing
+    };
+
+    const added = db.addActivity(testActivity);
+    assert.strictEqual(added.description, 'food - vegan', 'Should default description to category - type');
+    assert.strictEqual(added.emissions, 1.5, '3 meals * 0.5 emissions factor = 1.5');
+  });
+
+  test('deleteActivity returns false for non-existent activities', () => {
+    const success = db.deleteActivity(999999);
+    assert.strictEqual(success, false, 'Deleting non-existent activity ID should return false');
+  });
+
+  test('updateCommitmentStatus returns null for non-existent commitments', () => {
+    const updated = db.updateCommitmentStatus('non_existent_id', 'active');
+    assert.strictEqual(updated, null, 'Updating non-existent commitment ID should return null');
+  });
 });

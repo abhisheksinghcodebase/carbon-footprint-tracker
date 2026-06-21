@@ -48,7 +48,7 @@ app.use(cors({
     }
   },
   methods: ['GET', 'POST', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-EcoPulse-Reset-Key'],
   credentials: true
 }));
 
@@ -214,9 +214,13 @@ app.post('/api/profile', (req, res) => {
   }
 });
 
-// Reset Profile & Data endpoint
+// Reset Profile & Data endpoint (Protected via custom headers to prevent CSRF / unauthorized wipe)
 app.post('/api/reset', (req, res) => {
   try {
+    const resetKey = req.headers['x-ecopulse-reset-key'];
+    if (resetKey !== 'reset-approved') {
+      return res.status(403).json({ error: 'Forbidden: Missing or invalid reset verification key.' });
+    }
     db.resetAll();
     res.json({ success: true, message: 'All carbon logs reset successfully.' });
   } catch (err) {

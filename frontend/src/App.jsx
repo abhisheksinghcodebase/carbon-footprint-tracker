@@ -38,35 +38,30 @@ export default function App() {
     }
   }, [darkMode]);
 
-  // Load initial data
+  // Load initial data (using Promise.all to fetch in parallel and avoid network waterfalls)
   const fetchData = async () => {
     setLoading(true);
     setErrorMsg(null);
     try {
-      // 1. Fetch Profile
-      try {
-        const profileRes = await axios.get(`${API_URL}/api/profile`);
-        if (profileRes.data && profileRes.data.profileExists) {
-          setProfile(profileRes.data.profile);
-        } else {
-          setProfile(null);
-        }
-      } catch (err) {
-        if (err.response && err.response.status === 404) {
-          setProfile(null);
-        } else {
+      const [profileRes, actRes, comRes] = await Promise.all([
+        axios.get(`${API_URL}/api/profile`).catch(err => {
+          // Gracefully swallow 404/not found errors for baseline setup checks
+          if (err.response && err.response.status === 404) {
+            return { data: { profileExists: false } };
+          }
           throw err;
-        }
+        }),
+        axios.get(`${API_URL}/api/activities`),
+        axios.get(`${API_URL}/api/commitments`)
+      ]);
+
+      if (profileRes.data && profileRes.data.profileExists) {
+        setProfile(profileRes.data.profile);
+      } else {
+        setProfile(null);
       }
-
-      // 2. Fetch Activities
-      const actRes = await axios.get(`${API_URL}/api/activities`);
       setActivities(actRes.data);
-
-      // 3. Fetch Commitments
-      const comRes = await axios.get(`${API_URL}/api/commitments`);
       setCommitments(comRes.data);
-
     } catch (err) {
       console.error('Error fetching data:', err);
       setErrorMsg('Failed to connect to the backend server. Make sure the server is running on port 3000.');
@@ -129,7 +124,10 @@ export default function App() {
     }
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/api/reset`);
+      // Add custom header verification to protect endpoint against basic CSRF
+      await axios.post(`${API_URL}/api/reset`, {}, {
+        headers: { 'X-EcoPulse-Reset-Key': 'reset-approved' }
+      });
       setProfile(null);
       setActivities([]);
       await fetchData();
@@ -171,8 +169,16 @@ export default function App() {
 
           {/* Nav Tabs (only if profile is created) */}
           {profile && (
-            <div className="flex bg-zinc-100 dark:bg-zinc-900/50 p-1 rounded-lg border border-zinc-200/50 dark:border-zinc-800/40">
+            <nav 
+              role="tablist" 
+              aria-label="EcoPulse navigation tabs" 
+              className="flex bg-zinc-100 dark:bg-zinc-900/50 p-1 rounded-lg border border-zinc-200/50 dark:border-zinc-800/40"
+            >
               <button
+                role="tab"
+                id="tab-dashboard"
+                aria-selected={activeTab === 'dashboard'}
+                aria-controls="tabpanel-dashboard"
                 onClick={() => setActiveTab('dashboard')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold tracking-wide transition-all ${
                   activeTab === 'dashboard'
@@ -183,6 +189,10 @@ export default function App() {
                 <LayoutDashboard size={14} /> Dashboard
               </button>
               <button
+                role="tab"
+                id="tab-actions"
+                aria-selected={activeTab === 'actions'}
+                aria-controls="tabpanel-actions"
                 onClick={() => setActiveTab('actions')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold tracking-wide transition-all ${
                   activeTab === 'actions'
@@ -193,6 +203,10 @@ export default function App() {
                 <Target size={14} /> Goals & Actions
               </button>
               <button
+                role="tab"
+                id="tab-chat"
+                aria-selected={activeTab === 'chat'}
+                aria-controls="tabpanel-chat"
                 onClick={() => setActiveTab('chat')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold tracking-wide transition-all ${
                   activeTab === 'chat'
@@ -202,7 +216,7 @@ export default function App() {
               >
                 <MessageSquare size={14} /> AI Assistant
               </button>
-            </div>
+            </nav>
           )}
 
           {/* Action utilities (Theme, Log, Reset) */}
@@ -220,6 +234,7 @@ export default function App() {
               onClick={() => setDarkMode(!darkMode)}
               className="p-2 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg text-zinc-500 dark:text-zinc-400 transition-colors"
               title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               {darkMode ? <Sun size={16} /> : <Moon size={16} />}
             </button>
@@ -229,6 +244,7 @@ export default function App() {
                 onClick={handleReset}
                 className="p-2 border border-zinc-200 dark:border-zinc-800 hover:bg-red-500/10 dark:hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/35 rounded-lg text-zinc-400 dark:text-zinc-500 transition-colors"
                 title="Reset Baseline & Logs"
+                aria-label="Reset all carbon entries and baseline profile"
               >
                 <RefreshCw size={16} />
               </button>
@@ -272,26 +288,30 @@ export default function App() {
         ) : (
           <div className="space-y-6">
             {activeTab === 'dashboard' && (
-              <Dashboard 
-                profile={profile}
-                activities={activities}
-                commitments={commitments}
-                onDeleteActivity={handleDeleteActivity}
-                onOpenLogger={() => setShowLogger(true)}
-                onReset={handleReset}
-              />
+              <div id="tabpanel-dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
+                <Dashboard 
+                  profile={profile}
+                  activities={activities}
+                  commitments={commitments}
+                  onDeleteActivity={handleDeleteActivity}
+                  onOpenLogger={() => setShowLogger(true)}
+                  onReset={handleReset}
+                />
+              </div>
             )}
 
             {activeTab === 'actions' && (
-              <Actions 
-                commitments={commitments}
-                onUpdateStatus={handleUpdateCommitmentStatus}
-                baselineTotal={profile.total}
-              />
+              <div id="tabpanel-actions" role="tabpanel" aria-labelledby="tab-actions">
+                <Actions 
+                  commitments={commitments}
+                  onUpdateStatus={handleUpdateCommitmentStatus}
+                  baselineTotal={profile.total}
+                />
+              </div>
             )}
 
             {activeTab === 'chat' && (
-              <div className="max-w-3xl mx-auto">
+              <div id="tabpanel-chat" role="tabpanel" aria-labelledby="tab-chat" className="max-w-3xl mx-auto">
                 <Chat API_URL={API_URL} />
               </div>
             )}

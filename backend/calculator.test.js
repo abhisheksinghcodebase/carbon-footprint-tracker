@@ -66,4 +66,58 @@ describe('Carbon Calculator Calculations', () => {
     const invalidCO2 = calculateActivityEmissions('unknown', 'type', 50);
     assert.strictEqual(invalidCO2, 0);
   });
+
+  test('calculateBaseline handles empty/zero answers and returns a base value', () => {
+    const emptyAnswers = {
+      householdSize: 1,
+      carMileage: 0,
+      flightsShort: 0,
+      flightsMedium: 0,
+      flightsLong: 0,
+      transitMileage: 0,
+      electricityBill: 0,
+      gasBill: 0,
+      dietType: 'vegan',
+      clothingPurchases: 0,
+      electronicsPurchases: 0,
+      wasteOutput: 0,
+      recycleRate: 0
+    };
+    const result = calculateBaseline(emptyAnswers);
+    // Base food emissions should remain: vegan diet = 1.0 * 365 = 365
+    assert.strictEqual(result.breakdown.food, 365);
+    assert.strictEqual(result.breakdown.transport, 0);
+    assert.strictEqual(result.breakdown.energy, 0);
+    assert.strictEqual(result.breakdown.consumption, 0);
+    assert.strictEqual(result.total, 365);
+  });
+
+  test('calculateActivityEmissions handles zero values and negative offsets correctly', () => {
+    const zeroTransport = calculateActivityEmissions('transport', 'gasolineCar', 0);
+    assert.strictEqual(zeroTransport, 0);
+
+    const negativeOffset = calculateActivityEmissions('consumption', 'wasteRecycledOffset', 10);
+    assert.strictEqual(negativeOffset, -2.0); // 10 * -0.2 = -2.0
+  });
+
+  test('calculateBaseline handles extremely large inputs without crashing', () => {
+    const massiveAnswers = {
+      householdSize: 1,
+      carMileage: 999999,
+      carType: 'dieselCar',
+      flightsShort: 50,
+      flightsMedium: 50,
+      flightsLong: 50,
+      transitMileage: 5000,
+      electricityBill: 5000,
+      gasBill: 5000,
+      dietType: 'meatLover',
+      clothingPurchases: 100,
+      electronicsPurchases: 100,
+      wasteOutput: 50,
+      recycleRate: 100
+    };
+    const result = calculateBaseline(massiveAnswers);
+    assert.ok(result.total > 100000, 'Emissions total should be very large but computed');
+  });
 });
