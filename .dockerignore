@@ -1,0 +1,27 @@
+# Ignore local dependencies
+node_modules/
+**/node_modules/
+
+# Ignore local builds
+dist/
+**/dist/
+build/
+**/build/
+
+# Ignore local databases and logs
+*.db
+*.db-journal
+*.log
+backend/data/
+
+# Ignore VCS
+.git/
+.gitignore
+
+# Ignore local configs
+.env
+.env.*
+deploy.sh
+deploy.bat
+Dockerfile
+.dockerignore
