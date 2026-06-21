@@ -182,12 +182,18 @@ User Message: "${message}"
 });
 
 // Serving React built static files in production
-const frontendBuildPath = path.join(__dirname, '../frontend/dist');
+const frontendBuildPath = fs.existsSync(path.join(__dirname, '../frontend/dist'))
+  ? path.join(__dirname, '../frontend/dist')
+  : path.join(__dirname, 'frontend/dist');
+
 if (fs.existsSync(frontendBuildPath)) {
+  console.log('Serving frontend static files from:', frontendBuildPath);
   app.use(express.static(frontendBuildPath));
   app.get('*splat', (req, res) => {
     res.sendFile(path.join(frontendBuildPath, 'index.html'));
   });
+} else {
+  console.log('Frontend build path not found. Serving API only.');
 }
 
 // Start Server
