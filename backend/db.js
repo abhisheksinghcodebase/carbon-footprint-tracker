@@ -67,6 +67,8 @@ class JsonDatabase {
       activities: [],
       commitments: []
     };
+    this.isSaving = false;
+    this.savePending = false;
     this.init();
   }
 
@@ -131,11 +133,26 @@ class JsonDatabase {
   }
 
   save() {
-    try {
-      fs.writeFileSync(DB_FILE, JSON.stringify(this.data, null, 2), 'utf8');
-    } catch (err) {
-      console.error('Error saving database to JSON file:', err.message);
+    if (this.isSaving) {
+      this.savePending = true;
+      return;
     }
+
+    this.isSaving = true;
+    this.savePending = false;
+
+    // Use asynchronous writeFile to avoid blocking Node.js event loop
+    fs.writeFile(DB_FILE, JSON.stringify(this.data, null, 2), 'utf8', (err) => {
+      this.isSaving = false;
+      if (err) {
+        console.error('Error saving database to JSON file:', err.message);
+      }
+      
+      // If a save request came in while writing, run save again with latest data
+      if (this.savePending) {
+        this.save();
+      }
+    });
   }
 
   // API operations

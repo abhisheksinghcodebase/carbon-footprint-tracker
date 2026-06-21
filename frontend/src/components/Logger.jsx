@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { X, Calendar, PlusCircle, Sparkles } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, PlusCircle, Sparkles } from 'lucide-react';
 
 const SUBTYPES = {
   transport: [
@@ -34,7 +34,6 @@ const SUBTYPES = {
   ]
 };
 
-// Coefficient factors for frontend real-time estimation
 const FACTORS = {
   transport: { gasolineCar: 0.404, dieselCar: 0.430, hybridCar: 0.200, electricCar: 0.110, publicTransit: 0.140, flightShort: 0.225, flightMedium: 0.150, flightLong: 0.130 },
   energy: { electricity: 0.380, naturalGas: 5.300, lpg: 5.680, heatingOil: 10.200 },
@@ -50,6 +49,8 @@ export default function Logger({ onClose, onLog }) {
   const [description, setDescription] = useState('');
   const [estimatedCO2, setEstimatedCO2] = useState(0);
 
+  const modalRef = useRef(null);
+
   // Set default subtype when category changes
   useEffect(() => {
     if (SUBTYPES[category] && SUBTYPES[category].length > 0) {
@@ -63,6 +64,24 @@ export default function Logger({ onClose, onLog }) {
     const co2 = Number(value || 0) * factor;
     setEstimatedCO2(Math.round(co2 * 10) / 10);
   }, [category, type, value]);
+
+  // Trap focus and handle ESC key to close
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Focus first input
+    const firstInput = modalRef.current?.querySelector('input');
+    if (firstInput) firstInput.focus();
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -78,17 +97,26 @@ export default function Logger({ onClose, onLog }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/60 backdrop-blur-sm p-4 animate-slide-in">
-      <div className="w-full max-w-md bg-white dark:bg-[#0c0c0f] rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/60 backdrop-blur-sm p-4 animate-slide-in"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div 
+        ref={modalRef}
+        className="w-full max-w-md bg-white dark:bg-[#0c0c0f] rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden"
+      >
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 p-5">
+        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 p-5 bg-zinc-50/50 dark:bg-zinc-900/10">
           <div className="flex items-center gap-2 text-zinc-900 dark:text-zinc-50">
             <PlusCircle size={20} className="text-blue-500" />
-            <h3 className="text-lg font-bold">Log New Activity</h3>
+            <h3 id="modal-title" className="text-lg font-bold">Log New Activity</h3>
           </div>
           <button 
             onClick={onClose} 
+            aria-label="Close activity logger"
             className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 rounded-md transition-colors"
           >
             <X size={18} />
@@ -98,26 +126,26 @@ export default function Logger({ onClose, onLog }) {
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+            <label htmlFor="activity-date" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
               Date
             </label>
-            <div className="relative">
-              <input
-                type="date"
-                required
-                className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-            </div>
+            <input
+              id="activity-date"
+              type="date"
+              required
+              className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+              <label htmlFor="activity-category" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                 Category
               </label>
               <select
+                id="activity-category"
                 className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -130,10 +158,11 @@ export default function Logger({ onClose, onLog }) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+              <label htmlFor="activity-type" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                 Type
               </label>
               <select
+                id="activity-type"
                 className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
@@ -146,10 +175,11 @@ export default function Logger({ onClose, onLog }) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+            <label htmlFor="activity-value" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
               Quantity / Input Value
             </label>
             <input
+              id="activity-value"
               type="number"
               min="0.1"
               step="any"
@@ -161,10 +191,11 @@ export default function Logger({ onClose, onLog }) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+            <label htmlFor="activity-desc" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
               Short Description (optional)
             </label>
             <input
+              id="activity-desc"
               type="text"
               placeholder="e.g. Flight to Boston, Weekly Groceries"
               className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"

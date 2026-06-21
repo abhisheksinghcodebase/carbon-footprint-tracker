@@ -390,6 +390,7 @@ export default function Dashboard({
                 <select
                   value={categoryFilter}
                   onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
+                  aria-label="Filter by Category"
                   className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-xs px-2.5 py-1.5 text-zinc-700 dark:text-zinc-300 focus:outline-none"
                 >
                   <option value="all">All Categories</option>
@@ -404,6 +405,7 @@ export default function Dashboard({
               <select
                 value={timeFilter}
                 onChange={(e) => { setTimeFilter(e.target.value); setCurrentPage(1); }}
+                aria-label="Filter by Time range"
                 className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-xs px-2.5 py-1.5 text-zinc-700 dark:text-zinc-300 focus:outline-none"
               >
                 <option value="all">All Time</option>
@@ -504,6 +506,7 @@ export default function Dashboard({
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(1)}
+                  aria-label="First page"
                   className="p-1.5 border border-zinc-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronsLeft size={14} />
@@ -511,6 +514,7 @@ export default function Dashboard({
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(prev => prev - 1)}
+                  aria-label="Previous page"
                   className="p-1.5 border border-zinc-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronLeft size={14} />
@@ -521,6 +525,7 @@ export default function Dashboard({
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(prev => prev + 1)}
+                  aria-label="Next page"
                   className="p-1.5 border border-zinc-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronRight size={14} />
@@ -528,6 +533,7 @@ export default function Dashboard({
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(totalPages)}
+                  aria-label="Last page"
                   className="p-1.5 border border-zinc-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronsRight size={14} />

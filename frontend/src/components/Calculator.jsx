@@ -77,10 +77,11 @@ export default function Calculator({ onSave }) {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-household-size" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   How many people live in your household?
                 </label>
                 <input
+                  id="calc-household-size"
                   type="number"
                   min="1"
                   max="20"
@@ -91,10 +92,11 @@ export default function Calculator({ onSave }) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-electricity-bill" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   Average Monthly Electricity Bill ($)
                 </label>
                 <input
+                  id="calc-electricity-bill"
                   type="number"
                   min="0"
                   className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
@@ -104,10 +106,11 @@ export default function Calculator({ onSave }) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-gas-bill" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   Average Monthly Natural Gas Bill ($)
                 </label>
                 <input
+                  id="calc-gas-bill"
                   type="number"
                   min="0"
                   className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
@@ -133,10 +136,11 @@ export default function Calculator({ onSave }) {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-car-mileage" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   Annual Mileage Driven (miles)
                 </label>
                 <input
+                  id="calc-car-mileage"
                   type="number"
                   min="0"
                   className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
@@ -146,10 +150,11 @@ export default function Calculator({ onSave }) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-car-type" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   Vehicle Type
                 </label>
                 <select
+                  id="calc-car-type"
                   className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
                   value={answers.carType}
                   onChange={(e) => updateAnswer('carType', e.target.value)}
@@ -163,10 +168,11 @@ export default function Calculator({ onSave }) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-transit-mileage" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   Weekly Public Transit (miles)
                 </label>
                 <input
+                  id="calc-transit-mileage"
                   type="number"
                   min="0"
                   className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
@@ -177,10 +183,11 @@ export default function Calculator({ onSave }) {
 
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="block text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                  <label htmlFor="calc-flights-short" className="block text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                     Short Flights (1-3 hr)
                   </label>
                   <input
+                    id="calc-flights-short"
                     type="number"
                     min="0"
                     className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 py-2 text-sm text-center focus:outline-none text-zinc-950 dark:text-zinc-100"
@@ -189,10 +196,11 @@ export default function Calculator({ onSave }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                  <label htmlFor="calc-flights-med" className="block text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                     Med Flights (3-6 hr)
                   </label>
                   <input
+                    id="calc-flights-med"
                     type="number"
                     min="0"
                     className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 py-2 text-sm text-center focus:outline-none text-zinc-950 dark:text-zinc-100"
@@ -201,10 +209,11 @@ export default function Calculator({ onSave }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                  <label htmlFor="calc-flights-long" className="block text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                     Long Flights (6+ hr)
                   </label>
                   <input
+                    id="calc-flights-long"
                     type="number"
                     min="0"
                     className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 py-2 text-sm text-center focus:outline-none text-zinc-950 dark:text-zinc-100"
@@ -219,16 +228,16 @@ export default function Calculator({ onSave }) {
 
         {/* STEP 3: Diet & Food */}
         {step === 3 && (
-          <div className="space-y-6 animate-slide-in">
+          <div className="space-y-6 animate-slide-in" role="radiogroup" aria-label="Diet selection options">
             <div className="flex items-center gap-3 mb-4">
               <Utensils className="text-zinc-400 dark:text-zinc-500" size={24} />
               <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">Diet & Food Habits</h3>
             </div>
             
             <div className="space-y-4">
-              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              <span className="block text-xs font-medium text-zinc-500 dark:text-zinc-400">
                 Which diet best represents your eating habits?
-              </label>
+              </span>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
@@ -240,7 +249,11 @@ export default function Calculator({ onSave }) {
                   <div
                     key={item.id}
                     onClick={() => updateAnswer('dietType', item.id)}
-                    className={`p-4 border rounded-xl cursor-pointer hover:border-blue-500/80 transition-all ${
+                    role="radio"
+                    aria-checked={answers.dietType === item.id}
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') updateAnswer('dietType', item.id); }}
+                    className={`p-4 border rounded-xl cursor-pointer hover:border-blue-500/80 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${
                       answers.dietType === item.id 
                         ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-500/10 text-zinc-900 dark:text-zinc-50' 
                         : 'border-zinc-200 dark:border-zinc-800 bg-[#ffffff] dark:bg-[#0c0c0f]'
@@ -265,10 +278,11 @@ export default function Calculator({ onSave }) {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-clothing" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   New clothes purchased monthly (items)
                 </label>
                 <input
+                  id="calc-clothing"
                   type="number"
                   min="0"
                   className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
@@ -278,10 +292,11 @@ export default function Calculator({ onSave }) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-electronics" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   Electronics purchased annually (devices)
                 </label>
                 <input
+                  id="calc-electronics"
                   type="number"
                   min="0"
                   className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
@@ -291,10 +306,11 @@ export default function Calculator({ onSave }) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-waste" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   Weekly household trash bags (~5kg each)
                 </label>
                 <input
+                  id="calc-waste"
                   type="number"
                   min="0"
                   className="w-full bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-zinc-950 dark:text-zinc-100"
@@ -304,11 +320,12 @@ export default function Calculator({ onSave }) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                <label htmlFor="calc-recycle" className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
                   How much of your waste do you recycle? (%)
                 </label>
                 <div className="flex items-center gap-4">
                   <input
+                    id="calc-recycle"
                     type="range"
                     min="0"
                     max="100"
